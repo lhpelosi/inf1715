@@ -88,8 +88,8 @@ unsigned int _line = 1;
 %%
 [" "\t]                 ; // Ignora espacos e tabulacoes
 "//".*                  ; // Comentario C++
-"/*"([^*]|"\n"|"*"[^/])*"*"*"*/"	; // Comentario C
-("\n"(" ")*)+           { processNewLine(); return TK_NL; }
+"/*"([^*]|"\n"|"*"[^/])*"*"*"*/"	processNewLine(); // Comentario C
+("\n"[ \t]*)+         { processNewLine(); return TK_NL; }
 
 "if"                    return TK_IF;
 "else"                  return TK_ELSE;
@@ -109,14 +109,14 @@ unsigned int _line = 1;
 "or"                    return TK_OR;
 "not"                   return TK_NOT;
 
-[-+*=/<>(){}\[\];,]     return yytext[0]; // Tokens de um unico char tem seu proprio valor
+[-+*=/<>()\[\]:,]       return yytext[0]; // Tokens de um unico char tem seu proprio valor
 ">="                    return TK_GEQUALS;
 "<="                    return TK_LEQUALS;
 "<>"                    return TK_UNEQUALS;
 
-\"(\\.|[^\\"])*\"       { processString(); return TK_VALSTRING; } // String
+\"(\\.|[^\\"])*\" { processString(); return TK_VALSTRING; } // String
 "0"[xX][0-9A-Fa-f]+     | // Int Hexa
-[1-9][0-9]*             { setTokenInt( yytext ); return TK_VALINT; } // Int Decimal
+0|[1-9][0-9]*           { setTokenInt( yytext ); return TK_VALINT; } // Int Decimal
 [A-Za-z_][A-Za-z0-9_]*  { setTokenString( yytext ); return TK_ID; } // Identificadores
 
 .                       return ERROR;
