@@ -9,7 +9,7 @@
 #include <string.h>
 
 // Tipos de token
-enum
+typedef enum
 {
    TK_NL = UCHAR_MAX+1,
 
@@ -40,7 +40,7 @@ enum
 
    ERROR
 
-} Token;
+} TokenType;
 
 // Union pra guardar a informacao semantica do token
 union
@@ -48,6 +48,23 @@ union
    int ival;
    char * sval;
 } yylval;
+
+// Estrutura que representa um token
+typedef struct token
+{
+   // Seu tipo
+   TokenType type;
+
+   // Linha no arquivo original
+   unsigned int line;
+
+   // Valor semantico
+   union
+   {
+      int ival;
+      char * sval;
+   } value;
+} Token;
 
 // Salva informacao semantica de inteiro
 void setTokenInt( char * s );
@@ -58,6 +75,12 @@ void setTokenString( char * s );
 // Processa escapes da string lida e retira aspas
 void processString();
 
+// Processa a contagem das linhas
+void processNewLine();
+
+// Numero da linha corrente de leitura do arquivo
+unsigned int _line = 1;
+
 %}
 
 %option noyywrap
@@ -66,7 +89,7 @@ void processString();
 [" "\t]                 ; // Ignora espacos e tabulacoes
 "//".*                  ; // Comentario C++
 "/*"([^*]|"\n"|"*"[^/])*"*"*"*/"	; // Comentario C
-("\n"(" ")*)+           return TK_NL;
+("\n"(" ")*)+           { processNewLine(); return TK_NL; }
 
 "if"                    return TK_IF;
 "else"                  return TK_ELSE;
@@ -137,6 +160,16 @@ void processString()
    setTokenString( yytext );
 }
 
+void processNewLine()
+{
+   int i;
+   for ( i = 0 ; i < yyleng ; i++ )
+   {
+      if ( yytext[i] == '\n' )
+         _line++;
+   }
+}
+
 main()
 {
    unsigned int token;
@@ -144,6 +177,11 @@ main()
    // Enquanto houver tokens, ja os salva na variavel token
    while ( token = yylex() )
    {
+      char * separator = " ";
+
+      if ( token != TK_NL )
+         printf( "%d_", _line );
+
       // Se for token de apenas um char
       if ( token <= UCHAR_MAX )
       {
@@ -151,7 +189,7 @@ main()
       }
       else switch ( token )
       {
-         case TK_NL: printf( "NL\n" ); break;
+         case TK_NL: printf( "NL" ); separator = "\n"; break;
 
          case TK_IF: printf( "TK_IF" ); break;
          case TK_ELSE: printf( "TK_ELSE" ); break;
@@ -183,7 +221,7 @@ main()
          default: printf( "\n>>> Estado invalido!\n" );
       }
       
-      printf( " " );
+      printf( separator );
    }
 }
 
