@@ -1,16 +1,13 @@
 
 
-lexico: lex.yy.c
-	gcc -o lexico lex.yy.c
+lex: lex.yy.c
+	gcc -o lex lex.yy.c
 
-lex.yy.c: lexico.l
-	flex lexico.l
+lex.yy.c: lex.l
+	flex lex.l
 
 clean:
-	rm -f lexico *.o lex.yy.c
+	rm -f lex *.o lex.yy.c
 
-test: lexico
-	@echo "Teste sem erros:"
-	./lexico < teste_ok.txt
-	@echo "Teste com erros:"
-	./lexico < teste_erro.txt
+test: lex
+	./lex < testLex.txt

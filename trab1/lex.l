@@ -43,11 +43,12 @@ typedef enum
 } TokenType;
 
 // Union pra guardar a informacao semantica do token
-union
+typedef union
 {
    int ival;
    char * sval;
-} yylval;
+} Value;
+Value yylval;
 
 // Estrutura que representa um token
 typedef struct token
@@ -59,11 +60,8 @@ typedef struct token
    unsigned int line;
 
    // Valor semantico
-   union
-   {
-      int ival;
-      char * sval;
-   } value;
+   Value value;
+
 } Token;
 
 // Salva informacao semantica de inteiro
@@ -77,6 +75,9 @@ void processString();
 
 // Processa a contagem das linhas
 void processNewLine();
+
+// Le o proximo token e o aloca numa struct token
+Token * getToken();
 
 // Numero da linha corrente de leitura do arquivo
 unsigned int _line = 1;
@@ -114,7 +115,7 @@ unsigned int _line = 1;
 "<="                    return TK_LEQUALS;
 "<>"                    return TK_UNEQUALS;
 
-\"(\\.|[^\\"])*\" { processString(); return TK_VALSTRING; } // String
+\"(\\.|[^\\"])*\"       { processString(); return TK_VALSTRING; } // String
 "0"[xX][0-9A-Fa-f]+     | // Int Hexa
 0|[1-9][0-9]*           { setTokenInt( yytext ); return TK_VALINT; } // Int Decimal
 [A-Za-z_][A-Za-z0-9_]*  { setTokenString( yytext ); return TK_ID; } // Identificadores
@@ -170,24 +171,41 @@ void processNewLine()
    }
 }
 
-main()
+Token * getToken()
 {
-   unsigned int token;
+   unsigned int tokenType = yylex();
+   if ( !tokenType ) return NULL;
+
+   Token * token = (Token *) malloc( sizeof(Token) );
+   token->type = tokenType;
+   token->line = _line;
+   token->value = yylval;
+
+   return token;
+}
+
+int main( int argc, char * argv[] )
+{
+   Token * token;
+
+   if ( argc > 1 )
+      yyin = fopen( argv[1] ,"r" );
 
    // Enquanto houver tokens, ja os salva na variavel token
-   while ( token = yylex() )
+   while ( token = getToken() )
    {
+      unsigned int tokenType = token->type;
       char * separator = " ";
 
-      if ( token != TK_NL )
-         printf( "%d_", _line );
+      if ( tokenType != TK_NL )
+         printf( "%d_", token->line );
 
       // Se for token de apenas um char
-      if ( token <= UCHAR_MAX )
+      if ( tokenType <= UCHAR_MAX )
       {
-         printf( "TOKEN_%c", (unsigned char)token );
+         printf( "TOKEN_%c", (unsigned char)tokenType );
       }
-      else switch ( token )
+      else switch ( tokenType )
       {
          case TK_NL: printf( "NL" ); separator = "\n"; break;
 
@@ -212,9 +230,9 @@ main()
          case TK_LEQUALS: printf( "TK_LEQUALS" ); break;
          case TK_UNEQUALS: printf( "TK_UNEQUALS" ); break;
 
-         case TK_VALSTRING: printf( "TK_VALSTRING_\"%s\"", yylval.sval ); break;
-         case TK_VALINT: printf( "TK_VALINT_\"%d\"", yylval.ival ); break;
-         case TK_ID: printf( "TK_ID_\"%s\"", yylval.sval ); break;
+         case TK_VALSTRING: printf( "TK_VALSTRING_\"%s\"", token->value.sval ); break;
+         case TK_VALINT: printf( "TK_VALINT_\"%d\"", token->value.ival ); break;
+         case TK_ID: printf( "TK_ID_\"%s\"", token->value.sval ); break;
 
          case ERROR: printf( "InvalidToken" ); break;
 
@@ -223,5 +241,7 @@ main()
       
       printf( separator );
    }
+
+   return 0;
 }
 
