@@ -5,6 +5,7 @@
  */
 
 # include <stdio.h>
+extern FILE * yyin;
 int yydebug=1;
 
 %}
@@ -43,8 +44,6 @@ int yydebug=1;
 %token TK_VALSTRING
 %token TK_VALINT
 %token TK_ID
-
-%token ERROR
 
 %start programa
 
@@ -118,9 +117,9 @@ cmdatrib       : var '=' exp
 chamada        : TK_ID '(' listaexp ')'
                ;
 listaexp       : //vazio
-		         | listaexpaux
-		         ;
-listaexpaux		: exp
+               | listaexpaux
+               ;
+listaexpaux    : exp
                | listaexpaux ',' exp
                ;
 cmdreturn      : TK_RETURN exp
@@ -129,7 +128,7 @@ cmdreturn      : TK_RETURN exp
 var            : TK_ID
                | var '[' exp ']'
                ;
-exp		: exp_or
+exp      : exp_or
          ;
 exp_or   : exp_and
          | exp_or TK_OR exp_and
@@ -151,11 +150,11 @@ exp_add  : exp_mult
          | exp_add '+' exp_mult
          | exp_add '-' exp_mult
          ;
-exp_mult	: exp_base
+exp_mult : exp_base
          | exp_mult '*' exp_base
          | exp_mult '/' exp_base
          ;
-exp_base	: TK_VALINT | TK_VALSTRING
+exp_base : TK_VALINT | TK_VALSTRING
          | TK_TRUE | TK_FALSE
          | var
          | TK_NEW '[' exp ']' tipo
@@ -171,8 +170,11 @@ yyerror( char *s )
    fprintf( stderr, "%s\n", s );
 }
 
-main()
+int main( int argc, char * argv[] )
 {
+   if ( argc > 1 )
+      yyin = fopen( argv[1] ,"r" );
+
    return( yyparse() );
 }
 
