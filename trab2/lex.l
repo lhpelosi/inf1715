@@ -28,8 +28,14 @@ void processString();
 // Processa a contagem das linhas
 void processNewLine();
 
+// Notifica erros de leitura do lexico
+void lexicalError();
+
 // Numero da linha corrente de leitura do arquivo
 unsigned int _line = 1;
+
+// Identifica erros detectados no lexico ( 0 == sem erros )
+extern unsigned int _lexicalError;
 
 %}
 
@@ -68,6 +74,8 @@ unsigned int _line = 1;
 "0"[xX][0-9A-Fa-f]+     | // Int Hexa
 0|[1-9][0-9]*           { setTokenInt( yytext ); return TK_VALINT; } // Int Decimal
 [A-Za-z_][A-Za-z0-9_]*  { setTokenString( yytext ); return TK_ID; } // Identificadores
+
+.                       lexicalError();
 
 %%
 
@@ -116,5 +124,11 @@ void processNewLine()
       if ( yytext[i] == '\n' )
          _line++;
    }
+}
+
+void lexicalError()
+{
+   _lexicalError++;
+   fprintf( stderr, "Linha %d: Token invalido \"%s\"\n", _line, yytext );
 }
 

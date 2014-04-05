@@ -11,5 +11,5 @@ y.tab.c: yacc.y
 clean:
 	rm -f mini0 *.o lex.yy.c y.tab.c y.tab.h y.output
 
-test: lex
-	./lex < testLex.txt
+test: mini0
+	./mini0 tests/test1.txt

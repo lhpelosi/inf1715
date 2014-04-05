@@ -8,6 +8,15 @@
 extern FILE * yyin;
 int yydebug=1;
 
+// Identifica erros detectados no lexico ( 0 == sem erros )
+unsigned int _lexicalError = 0;
+
+// Identifica erros detectados de sintaxe ( 0 == sem erros )
+unsigned int _syntaxError = 0;
+
+// Numero da linha corrente de leitura do arquivo
+extern unsigned int _line;
+
 %}
 
 %union
@@ -167,7 +176,8 @@ exp_base : TK_VALINT | TK_VALSTRING
 
 yyerror( char *s )
 {
-   fprintf( stderr, "%s\n", s );
+   _syntaxError++;
+   fprintf( stderr, "Linha %d: Erro de sintaxe.\n", _line );
 }
 
 int main( int argc, char * argv[] )
@@ -175,6 +185,14 @@ int main( int argc, char * argv[] )
    if ( argc > 1 )
       yyin = fopen( argv[1] ,"r" );
 
-   return( yyparse() );
+   yyparse();
+
+   if ( _lexicalError > 0 || _syntaxError > 0 )
+      return -1;
+   else
+   {
+      fprintf( stdout, "Parsing realizado com sucesso!\n" );
+      return 0;
+   }
 }
 
