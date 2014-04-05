@@ -1,0 +1,4 @@
+// Erro: Expressao solta
+fun f()
+   a < b
+end

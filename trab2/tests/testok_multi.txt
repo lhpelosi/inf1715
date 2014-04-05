@@ -1,0 +1,7 @@
+
+var : int
+fun funcao ()
+end
+
+
+var3 : int

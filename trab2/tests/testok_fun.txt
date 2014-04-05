@@ -1,0 +1,21 @@
+fun f1()
+end
+fun f2() : int
+end
+fun f3( v1:int )
+end
+fun f4( v:[]int, n:int ) : int
+end
+
+fun f5()
+   v : int
+end
+
+fun f6()
+   v = 1
+end
+
+fun f7()
+   v : int
+   v = 1
+end

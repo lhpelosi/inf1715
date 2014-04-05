@@ -1,0 +1,5 @@
+// Erro: Declaracao depois de comando
+fun f()
+   v = 1
+   t : int
+end

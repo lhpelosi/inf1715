@@ -1,0 +1,10 @@
+// Erro: If com 2 else
+fun f()
+   if t
+      a = 1
+   else
+      a = 2
+   else
+      a = 3
+   end
+end

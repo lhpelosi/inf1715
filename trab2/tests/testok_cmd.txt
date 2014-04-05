@@ -1,0 +1,63 @@
+fun comandos()
+
+   // chamadas
+   f()
+   f( v1 )
+   f( v1, v2 )
+   f( v1, v2, v3 )
+   f( v1 + v2 )
+   f( v1 + v2, v3 )
+
+   // retorno
+   return
+   return var
+   return v1 + v2
+
+   // while
+   while t
+   loop
+   while f()
+   loop
+   while t
+      while s
+      loop
+   loop
+
+   // if
+   if t
+   end
+   if t
+      if s
+      end
+   end
+   if t
+      i=1
+   else
+      i=2
+   end
+   if t
+   else if s
+   end
+   if t
+   else if s
+   else
+   end
+
+   if t
+      if t
+      else if s
+      else
+      end
+   else if s
+      if t
+      else if s
+      else
+      end
+   else
+      if t
+      else if s
+      else
+      end
+   end
+
+end
