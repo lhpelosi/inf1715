@@ -185,6 +185,12 @@ int main( int argc, char * argv[] )
    if ( argc > 1 )
       yyin = fopen( argv[1] ,"r" );
 
+   if ( yyin == NULL )
+   {
+      fprintf( stderr, "Arquivo nao encontrado!\n" );
+      return -1;
+   }
+
    yyparse();
 
    if ( _lexicalError > 0 || _syntaxError > 0 )
