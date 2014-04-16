@@ -1,0 +1,15 @@
+// Varias notificacoes de erros de sintaxe + lexico
+
+ v : int
+
+ v : $int
+
+ v : int
+
+ ^v : int
+
+ v int
+
+// Apos o erro de sintaxe, o erro lexico nao eh detectado
+ v : $int
+

@@ -1,0 +1,7 @@
+var1 : int
+var2 : bool
+var3 : char
+var4 : string
+vvar : []int
+v : [][][]int
+
