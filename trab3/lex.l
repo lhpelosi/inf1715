@@ -15,6 +15,9 @@ void setTokenInt( char * s );
 // Salva informacao semantica de string
 void setTokenString( char * s );
 
+// Salva informacao do numero da linha, no caso de tokens simbolicos
+void setLine();
+
 // Processa escapes da string lida e retira aspas
 void processString();
 
@@ -40,28 +43,28 @@ extern unsigned int _lexicalError;
 "/*"([^*]|"\n"|"*"[^/])*"*"*"*/"	processNewLine(); // Comentario C
 ("\n"[ \t]*)+         { processNewLine(); return TK_NL; }
 
-"if"                    return TK_IF;
-"else"                  return TK_ELSE;
-"end"                   return TK_END;
-"while"                 return TK_WHILE;
-"loop"                  return TK_LOOP;
-"fun"                   return TK_FUN;
-"return"                return TK_RETURN;
-"new"                   return TK_NEW;
-"string"                return TK_STRING;
-"int"                   return TK_INT;
-"char"                  return TK_CHAR;
-"bool"                  return TK_BOOL;
-"true"                  return TK_TRUE;
-"false"                 return TK_FALSE;
-"and"                   return TK_AND;
-"or"                    return TK_OR;
-"not"                   return TK_NOT;
+"if"                    { setLine(); return TK_IF; }
+"else"                  { setLine(); return TK_ELSE; }
+"end"                   { setLine(); return TK_END; }
+"while"                 { setLine(); return TK_WHILE; }
+"loop"                  { setLine(); return TK_LOOP; }
+"fun"                   { setLine(); return TK_FUN; }
+"return"                { setLine(); return TK_RETURN; }
+"new"                   { setLine(); return TK_NEW; }
+"string"                { setLine(); return TK_STRING; }
+"int"                   { setLine(); return TK_INT; }
+"char"                  { setLine(); return TK_CHAR; }
+"bool"                  { setLine(); return TK_BOOL; }
+"true"                  { setLine(); return TK_TRUE; }
+"false"                 { setLine(); return TK_FALSE; }
+"and"                   { setLine(); return TK_AND; }
+"or"                    { setLine(); return TK_OR; }
+"not"                   { setLine(); return TK_NOT; }
 
-[-+*=/<>()\[\]:,]       return yytext[0]; // Tokens de um unico char tem seu proprio valor
-">="                    return TK_GEQUALS;
-"<="                    return TK_LEQUALS;
-"<>"                    return TK_UNEQUALS;
+[-+*=/<>()\[\]:,]       { setLine(); return yytext[0]; } // Tokens de um unico char tem seu proprio valor
+">="                    { setLine(); return TK_GEQUALS; }
+"<="                    { setLine(); return TK_LEQUALS; }
+"<>"                    { setLine(); return TK_UNEQUALS; }
 
 \"(\\.|[^\\"])*\"       { processString(); return TK_VALSTRING; } // String
 "0"[xX][0-9A-Fa-f]+     | // Int Hexa
@@ -81,6 +84,11 @@ void setTokenString( char * s )
 {
    yylval.sval = (char*) malloc( (strlen(s)+1) * sizeof(char) );
    strcpy( yylval.sval, s );
+}
+
+void setLine()
+{
+   yylval.line = _line;
 }
 
 void processString()

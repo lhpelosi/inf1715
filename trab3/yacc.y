@@ -65,32 +65,35 @@ extern unsigned int _line;
    int ival;
    char* sval;
    struct ast* node;
+   unsigned int line;
 }
 
 // Tipos de token
 
 %token TK_NL
 
-%token TK_IF
-%token TK_ELSE
-%token TK_END
-%token TK_WHILE
-%token TK_LOOP
-%token TK_FUN
-%token TK_RETURN
-%token TK_NEW
-%token TK_STRING
-%token TK_INT
-%token TK_CHAR
-%token TK_BOOL
-%token TK_TRUE
-%token TK_FALSE
-%token TK_AND
-%token TK_OR
-%token TK_NOT
-%token TK_GEQUALS
-%token TK_LEQUALS
-%token TK_UNEQUALS
+%token <line> '-' '+' '*' '=' '/' '<' '>' '(' ')' '[' ']' ':' ','
+
+%token <line> TK_IF
+%token <line> TK_ELSE
+%token <line> TK_END
+%token <line> TK_WHILE
+%token <line> TK_LOOP
+%token <line> TK_FUN
+%token <line> TK_RETURN
+%token <line> TK_NEW
+%token <line> TK_STRING
+%token <line> TK_INT
+%token <line> TK_CHAR
+%token <line> TK_BOOL
+%token <line> TK_TRUE
+%token <line> TK_FALSE
+%token <line> TK_AND
+%token <line> TK_OR
+%token <line> TK_NOT
+%token <line> TK_GEQUALS
+%token <line> TK_LEQUALS
+%token <line> TK_UNEQUALS
 
 %token <sval> TK_VALSTRING
 %token <ival> TK_VALINT
@@ -116,12 +119,12 @@ nl             : TK_NL                       {}
 global         : declvar nl                  { $$ = $1; }
                ;
 funcao         : TK_FUN TK_ID '(' params ')' funtipo nl bloco TK_END nl
-                                             { $$ = Ast_new( AST_FUN, _line );
-                                               Ast* parameters = Ast_new( AST_PARAMS, _line );
+                                             { $$ = Ast_new( AST_FUN, $1 );
+                                               Ast* parameters = Ast_new( AST_PARAMS, $1 );
                                                Ast_addChildren( parameters, $4 );
-                                               Ast* block = Ast_new( AST_BLOCK, _line );
+                                               Ast* block = Ast_new( AST_BLOCK, $1 );
                                                Ast_addChildren( block, $8 );
-                                               Ast_addChild( $$, Ast_newFromTokenSv( AST_ID, $2, _line) );
+                                               Ast_addChild( $$, Ast_newFromTokenSv( AST_ID, $2, $1 ) );
                                                Ast_addChild( $$, parameters );
                                                Ast_addChild( $$, block );
                                                Ast_addChild( $$, $6 ); }
@@ -146,12 +149,12 @@ params         : /* vazio */                 { $$ = NULL; }
 paramsaux      : parametro                   { $$ = $1; }
                | paramsaux ',' parametro     { $$ = Ast_prependSibling( $1, $3 ); }
                ;
-parametro      : TK_ID ':' tipo              { $$ = Ast_new( AST_DECLVAR, _line );
-                                               Ast_addChild( $$, Ast_newFromTokenSv( AST_ID, $1, _line ) );
+parametro      : TK_ID ':' tipo              { $$ = Ast_new( AST_DECLVAR, $2 );
+                                               Ast_addChild( $$, Ast_newFromTokenSv( AST_ID, $1, $2 ) );
                                                Ast_addChild( $$, $3 ); }
                ;
 tipo           : tipobase                    { $$ = $1; }
-               | '[' ']' tipo                { $$ = Ast_new( AST_ARRAY, _line );
+               | '[' ']' tipo                { $$ = Ast_new( AST_ARRAY, $1 );
                                                Ast_addChild( $$, $3 ); }
                ;
 tipobase       : TK_INT                      { $$ = Ast_new( AST_INT, _line ); }
@@ -159,8 +162,8 @@ tipobase       : TK_INT                      { $$ = Ast_new( AST_INT, _line ); }
                | TK_CHAR                     { $$ = Ast_new( AST_CHAR, _line ); }
                | TK_STRING                   { $$ = Ast_new( AST_STRING, _line ); }
                ;
-declvar        : TK_ID ':' tipo              { $$ = Ast_new( AST_DECLVAR, _line );
-                                               Ast_addChild( $$, Ast_newFromTokenSv( AST_ID, $1, _line) );
+declvar        : TK_ID ':' tipo              { $$ = Ast_new( AST_DECLVAR, $2 );
+                                               Ast_addChild( $$, Ast_newFromTokenSv( AST_ID, $1, $2 ) );
                                                Ast_addChild( $$, $3 ); }
                ;
 comando        : cmdif                       { $$ = $1; }
@@ -170,8 +173,8 @@ comando        : cmdif                       { $$ = $1; }
                | chamada                     { $$ = $1; }
                ;
 cmdif          : TK_IF exp nl bloco cmdelseif cmdelse TK_END
-                                             { $$ = Ast_new( AST_CMD_IF, _line );
-                                               Ast* block = Ast_new( AST_BLOCK, _line );
+                                             { $$ = Ast_new( AST_CMD_IF, $1 );
+                                               Ast* block = Ast_new( AST_BLOCK, $1 );
                                                Ast_addChildren( block, $4 );
                                                Ast* temp = Ast_prependSibling( $2, block );
                                                temp = Ast_prependSibling( temp, $5 );
@@ -180,7 +183,7 @@ cmdif          : TK_IF exp nl bloco cmdelseif cmdelse TK_END
                ;
 cmdelseif      : /* vazio */                 { $$ = NULL; }
                | cmdelseif TK_ELSE TK_IF exp nl bloco
-                                             { Ast* block = Ast_new( AST_BLOCK, _line );
+                                             { Ast* block = Ast_new( AST_BLOCK, $3 );
                                                Ast_addChildren( block, $6 );
                                                Ast* temp = Ast_prependSibling( $4, block );
                                                $$ = Ast_prependSibling( $1, temp ); }
@@ -189,20 +192,20 @@ cmdelse        : /* vazio */                 { $$ = NULL; }
                | TK_ELSE nl bloco            { $$ = $3; }
                ;
 cmdwhile       : TK_WHILE exp nl bloco TK_LOOP
-                                             { $$ = Ast_new( AST_CMD_WHILE, _line );
-                                               Ast* block = Ast_new( AST_BLOCK, _line );
+                                             { $$ = Ast_new( AST_CMD_WHILE, $1 );
+                                               Ast* block = Ast_new( AST_BLOCK, $1 );
                                                Ast_addChildren( block, $4 );
                                                Ast_addChild( $$, $2 );
                                                Ast_addChild( $$, block ); }
                ;
-cmdatrib       : var '=' exp                 { $$ = Ast_new( AST_CMD_ATRIB , _line );
-                                               Ast* v = Ast_new( AST_VAR , _line );
+cmdatrib       : var '=' exp                 { $$ = Ast_new( AST_CMD_ATRIB , $2 );
+                                               Ast* v = Ast_new( AST_VAR , $2 );
                                                Ast_addChildren( v, $1 );
                                                Ast_addChild( $$, v );
                                                Ast_addChild( $$, $3 ); }
                ;
-chamada        : TK_ID '(' listaexp ')'      { $$ = Ast_new( AST_CALL , _line );
-                                               Ast_addChild( $$, Ast_newFromTokenSv( AST_ID, $1, _line ) );
+chamada        : TK_ID '(' listaexp ')'      { $$ = Ast_new( AST_CALL , $2 );
+                                               Ast_addChild( $$, Ast_newFromTokenSv( AST_ID, $1, $2 ) );
                                                Ast_addChildren( $$, $3 ); }
                ;
 listaexp       : /* vazio */                 { $$ = NULL; }
@@ -211,9 +214,9 @@ listaexp       : /* vazio */                 { $$ = NULL; }
 listaexpaux    : exp                         { $$ = $1; }
                | listaexpaux ',' exp         { $$ = Ast_prependSibling( $1, $3 ); }
                ;
-cmdreturn      : TK_RETURN exp               { $$ = Ast_new( AST_CMD_RETURN , _line );
+cmdreturn      : TK_RETURN exp               { $$ = Ast_new( AST_CMD_RETURN , $1 );
                                                Ast_addChild( $$, $2 ); }
-               | TK_RETURN                   { $$ = Ast_new( AST_CMD_RETURN , _line ); }
+               | TK_RETURN                   { $$ = Ast_new( AST_CMD_RETURN , $1 ); }
                ;
 var            : TK_ID                       { $$ = Ast_newFromTokenSv( AST_ID, $1, _line ); }
                | var '[' exp ']'             { $$ = Ast_prependSibling( $1, $3 ); }
@@ -221,67 +224,67 @@ var            : TK_ID                       { $$ = Ast_newFromTokenSv( AST_ID, 
 exp      : exp_or                            { $$ = $1; }
          ;
 exp_or   : exp_and                           { $$ = $1; }
-         | exp_or TK_OR exp_and              { $$ = Ast_new( AST_EXP_OR , _line );
+         | exp_or TK_OR exp_and              { $$ = Ast_new( AST_EXP_OR , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
          ;
 exp_and  : exp_eq                            { $$ = $1; }
-         | exp_and TK_AND exp_eq             { $$ = Ast_new( AST_EXP_AND , _line );
+         | exp_and TK_AND exp_eq             { $$ = Ast_new( AST_EXP_AND , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
          ;
 exp_eq   : exp_rel                           { $$ = $1; }
-         | exp_eq '=' exp_rel                { $$ = Ast_new( AST_EXP_EQ , _line );
+         | exp_eq '=' exp_rel                { $$ = Ast_new( AST_EXP_EQ , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
-         | exp_eq TK_UNEQUALS exp_rel        { $$ = Ast_new( AST_EXP_UNEQ , _line );
+         | exp_eq TK_UNEQUALS exp_rel        { $$ = Ast_new( AST_EXP_UNEQ , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
          ;
 exp_rel  : exp_add                           { $$ = $1; }
-         | exp_rel '<' exp_add               { $$ = Ast_new( AST_EXP_L , _line );
+         | exp_rel '<' exp_add               { $$ = Ast_new( AST_EXP_L , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
-         | exp_rel '>' exp_add               { $$ = Ast_new( AST_EXP_G , _line );
+         | exp_rel '>' exp_add               { $$ = Ast_new( AST_EXP_G , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
-         | exp_rel TK_LEQUALS exp_add        { $$ = Ast_new( AST_EXP_LEQ , _line );
+         | exp_rel TK_LEQUALS exp_add        { $$ = Ast_new( AST_EXP_LEQ , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
-         | exp_rel TK_GEQUALS exp_add        { $$ = Ast_new( AST_EXP_GEQ , _line );
+         | exp_rel TK_GEQUALS exp_add        { $$ = Ast_new( AST_EXP_GEQ , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
          ;
 exp_add  : exp_mult                          { $$ = $1; }
-         | exp_add '+' exp_mult              { $$ = Ast_new( AST_EXP_ADD , _line );
+         | exp_add '+' exp_mult              { $$ = Ast_new( AST_EXP_ADD , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
-         | exp_add '-' exp_mult              { $$ = Ast_new( AST_EXP_SUB , _line );
+         | exp_add '-' exp_mult              { $$ = Ast_new( AST_EXP_SUB , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
          ;
 exp_mult : exp_base                          { $$ = $1; }
-         | exp_mult '*' exp_base             { $$ = Ast_new( AST_EXP_MULT , _line );
+         | exp_mult '*' exp_base             { $$ = Ast_new( AST_EXP_MULT , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
-         | exp_mult '/' exp_base             { $$ = Ast_new( AST_EXP_DIV , _line );
+         | exp_mult '/' exp_base             { $$ = Ast_new( AST_EXP_DIV , $2 );
                                                Ast_addChild( $$, $1 );
                                                Ast_addChild( $$, $3 ); }
          ;
 exp_base : TK_VALINT                         { $$ = Ast_newFromTokenIv( AST_VALINT, $1, _line ); }
          | TK_VALSTRING                      { $$ = Ast_newFromTokenSv( AST_VALSTRING, $1, _line ); }
-         | TK_TRUE                           { $$ = Ast_new( AST_TRUE , _line ); }
-         | TK_FALSE                          { $$ = Ast_new( AST_FALSE , _line ); }
+         | TK_TRUE                           { $$ = Ast_new( AST_TRUE , $1 ); }
+         | TK_FALSE                          { $$ = Ast_new( AST_FALSE , $1 ); }
          | var                               { $$ = Ast_new( AST_VAR , _line );
                                                Ast_addChildren( $$, $1 ); }
-         | TK_NEW '[' exp ']' tipo           { $$ = Ast_new( AST_EXP_NEW , _line );
+         | TK_NEW '[' exp ']' tipo           { $$ = Ast_new( AST_EXP_NEW , $2 );
                                                Ast_addChild( $$, $3 );
                                                Ast_addChild( $$, $5 ); }
          | '(' exp ')'                       { $$ = $2; }
          | chamada                           { $$ = $1; }
-         | TK_NOT exp_base                   { $$ = Ast_new( AST_EXP_NOT , _line );
+         | TK_NOT exp_base                   { $$ = Ast_new( AST_EXP_NOT , $1 );
                                                Ast_addChild( $$, $2 ); }
-         | '-' exp_base                      { $$ = Ast_new( AST_EXP_NEG , _line );
+         | '-' exp_base                      { $$ = Ast_new( AST_EXP_NEG , $1 );
                                                Ast_addChild( $$, $2 ); }
          ;
 %%
