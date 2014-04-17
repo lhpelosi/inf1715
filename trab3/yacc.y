@@ -189,7 +189,8 @@ cmdelseif      : /* vazio */                 { $$ = NULL; }
                                                $$ = Ast_prependSibling( $1, temp ); }
                ;
 cmdelse        : /* vazio */                 { $$ = NULL; }
-               | TK_ELSE nl bloco            { $$ = $3; }
+               | TK_ELSE nl bloco            { $$ = Ast_new( AST_BLOCK, $1 );
+                                               Ast_addChildren( $$, $3 ); }
                ;
 cmdwhile       : TK_WHILE exp nl bloco TK_LOOP
                                              { $$ = Ast_new( AST_CMD_WHILE, $1 );
@@ -312,9 +313,7 @@ int main( int argc, char * argv[] )
       return -1;
    else
    {
-      fprintf( stdout, "Parsing realizado com sucesso!\n" );
       Ast_print( _program );
-      fprintf( stdout, "\n" );
       return 0;
    }
 }
