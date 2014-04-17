@@ -23,7 +23,7 @@ struct ast
    Ast* prevSibling;
 };
 
-static void Ast_print( Ast* ast, int ntab );
+static void Ast_printAux( Ast* ast, int ntab );
 static Ast* newAstNode();
 
 
@@ -142,14 +142,14 @@ Ast* Ast_prependSibling( Ast* firstList, Ast* secondList )
 
 void Ast_print( Ast* ast )
 {
-   Ast_print( ast, 0 );
+   Ast_printAux( ast, 0 );
 }
 
 
 
 /*** Private ***/
 
-void Ast_print( Ast* ast, int ntab )
+void Ast_printAux( Ast* ast, int ntab )
 {
    return;
 }
