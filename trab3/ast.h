@@ -15,7 +15,7 @@ typedef enum astType
    // AST_PROGRAM possui numero indeterminado de filhos que podem ser AST_FUN ou AST_DECLVAR.
    AST_PROGRAM,
 
-   // AST_FUN possui quatro filhos nessa ordem: AST_ID, AST_PARAMS, AST_BLOCK, e por ultimo um no do conjunto de tipos de dados.
+   // AST_FUN possui quatro filhos nessa ordem: AST_ID, AST_PARAMS, AST_BLOCK, e por ultimo um no do conjunto de tipos de dados (se for NULL eh void)
    AST_FUN,
 
    // AST_BLOCK possui numero indeterminado de filhos do tipo AST_DECLVAR, seguido de indeterminados nos do conjunto de comandos.
@@ -79,12 +79,13 @@ typedef enum astType
    AST_EXP_SUB,
    AST_EXP_MULT,
    AST_EXP_DIV,
+   // AST_EXP_NEW possui 1 filho de tipo do conjunto de expressoes, seguido de filho do conjunto de tipos de dados.
+   AST_EXP_NEW,
 
    // Conjunto de expressoes de 1 filho
    // Os filhos podem ser qualquer outra expressao de 2 filhos, de 1 filho ou expressoes simples.
    AST_EXP_NOT,
    AST_EXP_NEG,
-   AST_EXP_NEW,
 
    // Conjunto de expressoes simples. (Tambem podem ser expressoes simples as AST_VAR e AST_CALL)
    // Sao todos folhas.
