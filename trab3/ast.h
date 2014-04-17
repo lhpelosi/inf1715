@@ -102,7 +102,8 @@ typedef enum astType
 } AstType;
 
 Ast* Ast_new( AstType type, unsigned int line );
-Ast* Ast_newFromToken( unsigned int token, unsigned int line );
+Ast* Ast_newFromTokenIv( AstType type, int ivalue, unsigned int line );
+Ast* Ast_newFromTokenSv( AstType type, char* svalue, unsigned int line );
 void Ast_addChild( Ast* parentNode, Ast* childNode );
 void Ast_addChildren( Ast* parentNode, Ast* childrenList );
 Ast* Ast_prependSibling( Ast* firstList, Ast* secondList );

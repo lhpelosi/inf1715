@@ -1,7 +1,7 @@
 TEST = ./mini0 tests
 
 mini0: lex.yy.c y.tab.c
-	gcc -o mini0 lex.yy.c y.tab.c
+	gcc -o mini0 lex.yy.c y.tab.c ast.c
 
 lex.yy.c: lex.l
 	lex lex.l

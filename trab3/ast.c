@@ -23,8 +23,11 @@ struct ast
    Ast* prevSibling;
 };
 
+
+
 static void Ast_printAux( Ast* ast, int ntab );
 static Ast* newAstNode();
+static char* typeTable( AstType type );
 
 
 
@@ -41,29 +44,19 @@ Ast* Ast_new( AstType type, unsigned int line )
 
 
 
-Ast* Ast_newFromToken( unsigned int token, unsigned int line )
+Ast* Ast_newFromTokenIv( AstType type, int ivalue, unsigned int line )
 {
-   Ast* node = newAstNode();
-   node->line = line;
+   Ast* node = Ast_new( type, line );
+   node->ival = ivalue;
+   return node;
+}
 
-   switch ( token )
-   {
-      case TK_VALSTRING:
-         node->type = AST_VALSTRING;
-         //node->sval = yylval.sval;
-         break;
 
-      case TK_VALINT:
-         node->type = AST_VALINT;
-         //node->ival = yylval.ival;
-         break;
 
-      case TK_ID:
-         node->type = AST_ID;
-         //node->sval = yylval.sval;
-         break;
-   }
-
+Ast* Ast_newFromTokenSv( AstType type, char* svalue, unsigned int line )
+{
+   Ast* node = Ast_new( type, line );
+   node->sval = svalue;
    return node;
 }
 
@@ -151,6 +144,47 @@ void Ast_print( Ast* ast )
 
 void Ast_printAux( Ast* ast, int ntab )
 {
+   int ntabCurr = ntab;
+   Ast* childCurr = NULL;
+
+   if ( ast == NULL ) return;
+
+   // Identacao
+   while ( ntabCurr-- ) fprintf( stdout, "   " );
+
+   // Imprime as infos do no
+   fprintf( stdout, "%s", typeTable( ast->type ) );
+   switch ( ast->type )
+   { 
+      case AST_VALSTRING:
+      case AST_ID:
+         fprintf( stdout, " [%s]", ast->sval );
+         break;
+      case AST_VALINT:
+         fprintf( stdout, " [%d]", ast->ival );
+         break;
+      defaut:
+         break;
+   }
+   fprintf( stdout, " @%d", ast->line );
+
+   // Iprime as infos dos filhos
+   childCurr = ast->firstChild;
+   if ( childCurr )
+   {
+      fprintf( stdout, " {\n" );
+
+      do
+      {
+         Ast_printAux( childCurr, ntab+1 );
+      } while ( childCurr = childCurr->nextSibling );
+
+      ntabCurr = ntab;
+      while ( ntabCurr-- ) fprintf( stdout, "   " );
+      fprintf( stdout, "}\n" );
+   }
+
+   fprintf( stdout, "\n" );
    return;
 }
 
@@ -181,9 +215,48 @@ Ast* newAstNode()
 
 
 
-int main(void)
+static char* typeTable( AstType type )
 {
-   return 0;
+   switch ( type )
+   {
+      case AST_PROGRAM : return "PROGRAM";
+      case AST_FUN : return "FUN";
+      case AST_BLOCK : return "BLOCK";
+      case AST_PARAMS : return "PARAMS";
+      case AST_DECLVAR : return "DECLVAR";
+      case AST_VAR : return "VAR";
+      case AST_CMD_IF : return "CMD_IF";
+      case AST_CMD_WHILE : return "CMD_WHILE";
+      case AST_CMD_ATRIB : return "CMD_ATRIB";
+      case AST_CMD_RETURN : return "CMD_RETURN";
+      case AST_CALL : return "CALL";
+      case AST_ARRAY : return "ARRAY";
+      case AST_INT : return "INT";
+      case AST_BOOL : return "BOOL";
+      case AST_CHAR : return "CHAR";
+      case AST_STRING : return "STRING";
+      case AST_EXP_OR : return "EXP_OR";
+      case AST_EXP_AND : return "EXP_AND";
+      case AST_EXP_EQ : return "EXP_EQ";
+      case AST_EXP_UNEQ : return "EXP_UNEQ";
+      case AST_EXP_L : return "EXP_L";
+      case AST_EXP_G : return "EXP_G";
+      case AST_EXP_LEQ : return "EXP_LEQ";
+      case AST_EXP_GEQ : return "EXP_GEQ";
+      case AST_EXP_ADD : return "EXP_ADD";
+      case AST_EXP_SUB : return "EXP_SUB";
+      case AST_EXP_MULT : return "EXP_MULT";
+      case AST_EXP_DIV : return "EXP_DIV";
+      case AST_EXP_NEW : return "EXP_NEW";
+      case AST_EXP_NOT : return "EXP_NOT";
+      case AST_EXP_NEG : return "EXP_NEG";
+      case AST_TRUE : return "TRUE";
+      case AST_FALSE : return "FALSE";
+      case AST_VALSTRING : return "VALSTRING";
+      case AST_VALINT : return "VALINT";
+      case AST_ID : return "ID";
+   }
+   return "!";
 }
 
 
