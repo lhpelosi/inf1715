@@ -181,7 +181,7 @@ void Ast_printAux( Ast* ast, int ntab )
 
       ntabCurr = ntab;
       while ( ntabCurr-- ) fprintf( stdout, "   " );
-      fprintf( stdout, "}\n" );
+      fprintf( stdout, "}" );
    }
 
    fprintf( stdout, "\n" );

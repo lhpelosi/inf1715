@@ -100,9 +100,9 @@ extern unsigned int _line;
 
 %%
 programa       : nl programaaux              { _program = Ast_new( AST_PROGRAM, 1 );
-                                               Ast_addChildren( $$, $2 ); }
+                                               Ast_addChildren( _program, $2 ); }
                | programaaux                 { _program = Ast_new( AST_PROGRAM, 1 );
-                                               Ast_addChildren( $$, $1 ); }
+                                               Ast_addChildren( _program, $1 ); }
                ;
 programaaux    : decl                        { $$ = $1; }
                | programaaux decl            { $$ = Ast_prependSibling( $1, $2 ); }
