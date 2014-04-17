@@ -101,12 +101,60 @@ typedef enum astType
 
 } AstType;
 
+
+
+/**
+ * Cria um novo no
+ * @param type Indica o tipo de estrutura representado pelo no
+ * @param line A linha em que essa estrutura se encontra no arquivo de entrada
+ * @return O no gerado
+ */
 Ast* Ast_new( AstType type, unsigned int line );
+
+/**
+ * Cria um novo no com tipo semantico de inteiro
+ * @param type Indica o tipo de estrutura representado pelo no
+ * @param ivalue O valor de inteiro que ele guarda
+ * @param line A linha em que essa estrutura se encontra no arquivo de entrada
+ * @return O no gerado
+ */
 Ast* Ast_newFromTokenIv( AstType type, int ivalue, unsigned int line );
+
+/**
+ * Cria um novo no com tipo semantico de string
+ * @param type Indica o tipo de estrutura representado pelo no
+ * @param ivalue O valor de string que ele guarda
+ * @param line A linha em que essa estrutura se encontra no arquivo de entrada
+ * @return O no gerado
+ */
 Ast* Ast_newFromTokenSv( AstType type, char* svalue, unsigned int line );
+
+/**
+ * Adiciona um unico no como filho de outro
+ * @param parentNode O no que sera o pai
+ * @param childNode O no que sera o filho
+ */
 void Ast_addChild( Ast* parentNode, Ast* childNode );
+
+/**
+ * Adiciona uma lista de nos como filho de um no
+ * @param parentNode O no que sera o pai
+ * @param childrenList A lista de nos que serao filhos dele
+ */
 void Ast_addChildren( Ast* parentNode, Ast* childrenList );
+
+/**
+ * Junta duas listas de nos (podendo ter inclusive 0 ou 1 elemento) como irmaos
+ * @param firstList Primeira lista de nos
+ * @param secondList Segunda lista de nos
+ * @return A lista resultante da uniao
+ */
 Ast* Ast_prependSibling( Ast* firstList, Ast* secondList );
+
+/**
+ * Imprime uma arvore sintatica na stdout
+ * @param ast A arvore sintatica abstrata do programa a ser impresso
+ */
 void Ast_print( Ast* ast );
 
 #endif
