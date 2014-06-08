@@ -6,6 +6,7 @@
 
 # include <stdio.h>
 # include "ast.h"
+# include "sym.h"
 
 extern FILE * yyin;
 int yydebug=1;
@@ -15,6 +16,9 @@ unsigned int _lexicalError = 0;
 
 // Identifica erros detectados de sintaxe ( 0 == sem erros )
 unsigned int _syntaxError = 0;
+
+// Identifica erros detectados na tipagem ( 0 == sem erros )
+unsigned int _symError = 0;
 
 // Guarda a arvore sintatica abstrata do programa lido
 Ast* _program = NULL;
@@ -311,10 +315,12 @@ int main( int argc, char * argv[] )
 
    if ( _lexicalError > 0 || _syntaxError > 0 )
       return -1;
-   else
-   {
-      Ast_print( _program );
-      return 0;
-   }
+
+   _symError = Sym_annotate( _program );
+   if ( _symError > 0 )
+      return -1;
+
+   Ast_print( _program );
+   return 0;
 }
 

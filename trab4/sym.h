@@ -6,23 +6,30 @@
 #ifndef SYM_H
 #define SYM_H
 
-#include "ast.h"
+// Forward declaration
+typedef struct ast Ast;
+
+
 
 typedef struct symbol Symbol;
 typedef struct scope Scope;
 typedef struct symbolTable SymbolTable;
-typedef enum symbolType
+typedef enum dType DataType;
+
+enum dType
 {
-   SYM_INT,
-   SYM_BOOL,
-   SYM_CHAR,
-   SYM_FUN
-} SymbolType;
+   TYPE_INT,
+   TYPE_BOOL,
+   TYPE_CHAR,
+   TYPE_VOID,
+
+   TYPE_UNDEFINED
+};
 
 struct symbol
 {
    char* name;
-   SymbolType type;
+   DataType type;
    int nReferences;
    int line;
    Symbol* nextSymbol;

@@ -6,6 +6,9 @@
 #ifndef AST_H
 #define AST_H
 
+#include "sym.h"
+
+
 // Tipo basico de no da arvore sintatica abstrata
 typedef struct ast Ast;
 
@@ -100,6 +103,31 @@ typedef enum astType
    AST_INVALID
 
 } AstType;
+
+
+// No da AST
+struct ast
+{
+   // Tipo do no
+   AstType type;
+   // Linha em que se encontra
+   unsigned int line;
+   // Valor numerico se possuir
+   int ival;
+   // Valor string se possuir
+   char* sval;
+
+   // Tipo de dados
+   DataType dataType;
+   int nReferences;
+
+   // Nos da AST relativos a esse
+   Ast* parent;
+   Ast* firstChild;
+   Ast* lastChild;
+   Ast* nextSibling;
+   Ast* prevSibling;
+};
 
 
 

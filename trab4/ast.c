@@ -8,20 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "y.tab.h"
-
-struct ast
-{
-   AstType type;
-   unsigned int line;
-   int ival;
-   char* sval;
-
-   Ast* parent;
-   Ast* firstChild;
-   Ast* lastChild;
-   Ast* nextSibling;
-   Ast* prevSibling;
-};
+#include "sym.h"
 
 
 
@@ -166,6 +153,42 @@ void Ast_printAux( Ast* ast, int ntab )
       defaut:
          break;
    }
+
+   // Imprime o tipo de dados do no
+   if ( ast->dataType != TYPE_UNDEFINED )
+   {
+      const char* typeStr;
+      int iReferences;
+      fprintf( stdout, " : " );
+
+      iReferences = ast->nReferences;
+      while ( iReferences > 0 )
+      {
+         fprintf( stdout, "[]" );
+         iReferences--;
+      }
+
+      switch ( ast->dataType )
+      {
+         case TYPE_INT:
+            typeStr = "int";
+            break;
+         case TYPE_BOOL:
+            typeStr = "bool";
+            break;
+         case TYPE_CHAR:
+            typeStr = "char";
+            break;
+         case TYPE_VOID:
+            typeStr = "void";
+            break;
+         default:
+            typeStr = "";
+            break;
+      }
+      fprintf( stdout, "%s", typeStr );
+   }
+
    fprintf( stdout, " @%d", ast->line );
 
    // Iprime as infos dos filhos
@@ -203,6 +226,9 @@ Ast* newAstNode()
    node->line = 0;
    node->ival = 0;
    node->sval = NULL;
+
+   node->dataType = TYPE_UNDEFINED;
+   node->nReferences = 0;
 
    node->parent = NULL;
    node->firstChild = NULL;
