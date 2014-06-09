@@ -1,0 +1,39 @@
+fun g()
+end
+
+fun f()
+
+   if( true )
+      f()
+   end
+
+   if( false )
+      f()
+   else if ( true )
+      g()
+   end
+
+   if ( true )
+      f()
+   else
+      g()
+   end
+
+   while ( true )
+      f()
+   loop
+
+   return
+end
+
+fun h()
+   var : int
+   if (true)
+      var : int
+   end
+   while ( true )
+      var : int
+   loop
+   var = 1
+   var[0] = var[0]
+end

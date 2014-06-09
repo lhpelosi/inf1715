@@ -1,0 +1,39 @@
+fun g() : int
+end
+
+fun f()
+   vInt : int
+   vInt2 : int
+   vBool : bool
+   vString : []char
+
+   vInt = 1
+   vInt = -1
+   vInt = 1+2
+   vInt = vInt+1
+   vInt = 1-1
+   vInt = 2*3
+   vInt = 4/2
+
+   vBool = true
+   vBool = false
+   vBool = not true
+   vBool = true or false
+   vBool = true and false
+   vBool = true = false
+   vBool = true <> false
+   vBool = 1 = 2
+   vBool = 1 <> 2
+   vBool = 1 < 2
+   vBool = 1 > 2
+   vBool = 1 <= 2
+   vBool = 1 >= 2
+
+   vInt = vInt2
+   vInt = g()
+
+   vString = new [3]char
+   vString = "string"
+
+   vBool = ( (-1+2*3)>(4/2-1) and (true or not false) ) <> ( 1<2 or 2>3 or 3<=4 or 4>=5+vInt )
+end

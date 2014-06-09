@@ -1,0 +1,25 @@
+fun f()
+   vInt : int
+   vBool : bool
+
+   vInt = true
+   vInt = 1+true
+   vInt = true-1
+   vInt = -true
+   vInt = true*false
+   vInt = true/false
+
+   vBool = 1
+   vBool = not 1
+   vBool = true or 1
+   vBool = 1 and false
+   
+   vBool = true = 1
+   vBool = false <> 0
+   vBool = false < 1
+   vBool = 0 > true
+   vBool = false <= 0
+   vBool = 1 >= true
+
+   vInt = new [3]int
+end

@@ -1,0 +1,17 @@
+fun f()
+   if (1)
+      var1 : int
+      var1 : int
+   end
+   while (1)
+      var2 : int
+      var2 : int
+   loop
+end
+
+fun g()
+   var1 : int
+   var2 : bool
+   var1 = var2
+   var1[0][0] = var1[0]
+end

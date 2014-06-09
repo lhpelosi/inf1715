@@ -275,7 +275,7 @@ int Sym_visitVar( SymbolTable* table, Ast* var )
    Symbol* symbol = Sym_getSymbol( table, name, 0 );
    if ( symbol == NULL )
    {
-      Sym_fail( "Simbolo nao declarado.", name, var );
+      Sym_fail( "Simbolo nao declarado.", name, var->firstChild );
       return 1;
    }
    var->dataType = symbol->type;
@@ -288,12 +288,6 @@ int Sym_visitVar( SymbolTable* table, Ast* var )
       errors += Sym_checkDataType( indexer, TYPE_INT, 0 );
       (var->nReferences)--; // Pois a indexacao faz 'perder' uma referencia
       indexer = indexer->nextSibling;
-   }
-
-   if ( var->nReferences < 0 )
-   {
-      Sym_fail( "Indexacao excessiva.", name, var );
-      errors++;
    }
 
    return errors;
@@ -545,10 +539,10 @@ int Sym_getDataType( Ast* typeNode, DataType* dataType )
          *dataType = TYPE_BOOL;
          break;
       case AST_CHAR :
-         *dataType = TYPE_CHAR;
+         *dataType = TYPE_INT; // Conversao de char pra int
          break;
       case AST_STRING :
-         *dataType = TYPE_CHAR;
+         *dataType = TYPE_INT; // Conversao de char pra int
          nReferences++;
          break;
       default :

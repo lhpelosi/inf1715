@@ -1,0 +1,14 @@
+var : int
+fun var()
+end
+fun f( var2 :int )
+   var2 : int
+   f0()
+end
+
+fun f()
+end
+
+fun f1() : int
+   return true
+end

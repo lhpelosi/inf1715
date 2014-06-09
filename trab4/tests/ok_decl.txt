@@ -1,0 +1,33 @@
+var : int
+var2 :  int
+fun f( var : int, vv : bool )
+   var2 :  int
+   f( 0, true )
+end
+
+var3 : bool
+var4 : char
+var5 : string
+var6 : [][][]int
+
+fun f0()
+   return
+end
+fun f1() : int
+   return 0
+end
+fun f2() : bool
+   return true
+end
+fun f3() : char
+   word : []char
+   return word[0]
+end
+fun f4() : string
+   word : []char
+   return word
+end
+fun f5() : [][][]int
+   array : [][][]int
+   return array
+end
