@@ -87,6 +87,18 @@ struct Instr_ {
 	Addr x;
 	Addr y;
 	Addr z;
+
+   /*
+   Vetor para considerar o uso futuro das variaveis (Next-Use Information)
+   Seu tamanho é a soma de variaveis locais (primeiras posicoes)
+   mais as variaveis temporarias (as posicoes seguintes)
+   respeitando a ordem declarada na funcao.
+   Pode conter o valor -1, significando not alive e no next use
+   ou um numero positivo, indicando a posicao da instrucao dentro de um bloco
+   como o next use e também sendo alive. (posicao indexada a partir de 0)
+   Eh possivel que o valor positivo ultrapasse o bloco, indicando seu uso fora dele.
+   */
+   int* usageInfo;
 };
 
 /*
@@ -183,5 +195,7 @@ Addr Addr_function(char* name);
 Addr Addr_resolve(char* name, IR* ir, Function* fun);
 
 Function* Function_new(char* name, Variable* args);
+int Function_nLocals( Function* function );
+int Function_nTemps( Function* function );
 
 #endif

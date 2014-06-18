@@ -187,6 +187,7 @@ Instr* Instr_new(Opcode op, ...) {
 	va_start(ap, op);
 	Instr* ins = calloc(1, sizeof(Instr));
 	ins->op = op;
+   ins->usageInfo = NULL;
 	switch (op) {
 		// instructions with x only
 		case OP_LABEL:
@@ -316,6 +317,20 @@ static void Function_dump(Function* fun, FILE* fd) {
 	for (Instr* ins = fun->code; ins; ins = ins->next) {
 		Instr_dump(ins, fd);
 	}
+}
+
+int Function_nLocals( Function* function )
+{
+   int n = 0;
+   for ( Variable* v = function->locals ; v ; v = v->next ) n++;
+   return n;
+}
+
+int Function_nTemps( Function* function )
+{
+   int n = 0;
+   for ( Variable* v = function->temps ; v ; v = v->next ) n++;
+   return n;
 }
 
 // -------------------- IR --------------------
