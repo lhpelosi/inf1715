@@ -5,6 +5,8 @@ CFLAGS=-std=c99 -D_GNU_SOURCE -g -Wall -Werror
 PROGRAM=backend
 OBJECTS=main.o ir.o asm.o
 
+TEST = ./$(PROGRAM) tests
+
 all: $(PROGRAM)
 
 $(PROGRAM): grammar.tab.c lexer.lex.c $(OBJECTS)
@@ -30,6 +32,12 @@ cov:
 	$(MAKE) CFLAGS="$(CFLAGS) -fprofile-arcs -ftest-coverage" all
 
 clean:
-	rm -f core *.gcov *.gcda *.gcno *.tab.* *.lex.* *.output *.gch *.dot *.o $(PROGRAM)
+	rm -f core *.gcov *.gcda *.gcno *.tab.* *.lex.* *.output *.gch *.dot *.o $(PROGRAM) $(TEST)/*.s
+
+test: $(PROGRAM)
+	$(TEST)/fun.m0.ir
+	$(TEST)/funvar.m0.ir
+	$(TEST)/instr.m0.ir
+
 
 

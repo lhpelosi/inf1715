@@ -1,0 +1,48 @@
+string str = "hello"
+
+fun fsets(x)
+   n = 10
+   a = byte n
+   b = str[1]
+   b = byte str[2]
+   x[1] = 20
+   x[1] = byte b
+   ret
+
+fun fpath()
+   x1 = 0
+   x2 = 0
+   x3 = 0
+.L1:
+   param x2
+   call fsets 1
+   goto .L2
+   x4 = 0
+.L2:
+   x5 = 0
+   if $0 goto .L2
+   ifFalse $1 goto .L2
+   x6 = 0
+
+fun fops()
+   a = 0
+   b = 1
+   x = a != b
+   x = a == b
+   x = a < b
+   x = a > b
+   x = a <= b
+   x = a >= b
+   x = a + b
+   x = a - b
+   x = a / b
+   x = a * b
+   x = - a
+   ret x
+
+fun fnew()
+   a = new 10
+   b = new byte 10
+   a[5] = 1
+   ret
+

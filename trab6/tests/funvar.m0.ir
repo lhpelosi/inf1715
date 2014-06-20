@@ -1,0 +1,32 @@
+string sta = "sta"
+string stb = "stb"
+
+global globa
+global globb
+
+fun f()
+   ret
+
+fun g(a)
+   ret a
+
+fun h()
+   x = 0
+   ret x
+
+fun k()
+   $t1 = 0
+   ret $t1
+
+fun r(a)
+   x = 0
+   a = globa
+   x = sta
+
+fun s(a,b,c)
+   x = a
+   y = b
+   z = c
+   $t1 = x
+   $t2 = y
+   $t3 = z
