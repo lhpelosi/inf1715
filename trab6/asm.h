@@ -14,6 +14,10 @@ struct BasicBlock_ {
 	BasicBlock* next;
 	Instr* instr;
    int nInstr;
+
+   int addressDescriptorSize;
+   Variable* registerDescriptor[6];
+   Variable** addressDescriptor;
 };
 
 void Asm_write( IR* program, FILE* outputFile );
